@@ -18,7 +18,7 @@
 			myMonth = toDate.getMonth();
 			myYear = toDate.getFullYear();
 			myDay=toDate.getUTCDate();
-			console.log("Fecha",myYear,myMonth,myDay,"dayOfWeek=",dayOfWeek);
+			//console.log("Fecha",myYear,myMonth,myDay,"dayOfWeek=",dayOfWeek);
 			myRow="<tr>";
 			cont=0;
 			contMonth=0;
@@ -38,7 +38,7 @@
 							myColor="pink";
 						if(cont<=numberOfDays){
 							myRow=myRow+"<td class=\""+myColor+"\">"+(today-1)+"</td>";
-							console.log(cont,numberOfDays,(today-1));
+							//console.log(cont,numberOfDays,(today-1));
 						}else{
 							if((i)%7==0 && i!=0)//when the last day is saturday
 								break;
