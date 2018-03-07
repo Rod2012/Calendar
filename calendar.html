@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<script type="text/javascript">
+	function doCalendar() {
+		try {
+			var startDate = document.getElementById("start").value;
+			var numberOfDays = document.getElementById("days").value;
+			var CountryCode = document.getElementById("code").value;
+			var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			var holidays = ["5-1","12-25"]; //month-day, without leading zeros
+			numberOfDays = numberOfDays-1 
+			document.getElementById("divCalendar").innerHTML=""
+			toDate = new Date(startDate);
+			dayOfWeek = toDate.getDay();
+			myMonth = toDate.getMonth();
+			myYear = toDate.getFullYear();
+			myDay=toDate.getUTCDate();
+			console.log("Fecha",myYear,myMonth,myDay,"dayOfWeek=",dayOfWeek);
+			myRow="<tr>";
+			cont=0;
+			contMonth=0;
+			
+			while (cont<=numberOfDays) {
+				//console.log("Fecha:",myYear,myMonth,myDay,"dayOfWeek=",dayOfWeek);
+				document.getElementById("divCalendar").innerHTML=document.getElementById("divCalendar").innerHTML+createMonth(contMonth,months[myMonth]);
+				myRow="<tr>";
+				for (var i = 0; i < 365; i++) {
+					if(i>dayOfWeek){
+						today=myDay+(i-dayOfWeek);
+						if((i)%7==0 || (i+1)%7==0)
+							myColor="yellow";
+						else
+							myColor="green";
+						if(holidays.indexOf((myMonth+1)+"-"+(today-1))!=-1)
+							myColor="pink";
+						if(cont<=numberOfDays){
+							myRow=myRow+"<td class=\""+myColor+"\">"+(today-1)+"</td>";
+							console.log(cont,numberOfDays,(today-1));
+						}else{
+							if((i)%7==0 && i!=0)//when the last day is saturday
+								break;
+							myRow=myRow+"<td class=\"gray\">"+"&nbsp;"+"</td>";
+						}
+						cont++;
+						if(myDay+(i-dayOfWeek)>31 || !isValidDate(myYear,myMonth+1,today))
+							break;
+					}else{
+						myRow=myRow+"<td class=\"gray\">"+"&nbsp;"+"</td>";
+					}
+					if((i+1)%7==0 && i!=0)
+						myRow=myRow+"</tr>\n"+""+"<tr>";
+				}
+				myRow=myRow+"</tr>";
+				document.getElementById("body"+contMonth).innerHTML=myRow;
+				contMonth++;
+				toDate = new Date(myYear,myMonth,today)
+				dayOfWeek = toDate.getDay()-1;//this is to fix a bug
+				myMonth=toDate.getMonth();
+				myYear=toDate.getFullYear();
+				myDay=toDate.getUTCDate();
+			}
+		} catch (e) {
+			console.log(e.message);
+		}
+	}
+
+	function isValidDate(year, month, day) {
+	        var d = new Date(year, month - 1, day, 0, 0, 0, 0);
+	        if(d.getUTCDate()!=day)
+	        	console.log("Day fail!",d.getUTCDate(),day);
+	        if((d.getMonth() + 1)!=month)
+	        	console.log("Month fail!",(d.getMonth() + 1),month);
+	        if(d.getFullYear()!=year)
+	        	console.log("Year fail!",d.getFullYear(),year);
+	        return (!isNaN(d) && (d.getUTCDate()==day && (d.getMonth() + 1)==month && d.getFullYear()==year));
+	}
+	
+	function createMonth(n,month) {
+		var html = '<table id="rejilla_calendario'+n+'" style="">'+
+					'<caption id="month'+n+'">'+month+'</caption>'+
+					'<thead style="font-size: 7pt;">'+
+						'<tr>'+
+							'<th width="14.28%">Sun</th>'+
+							'<th width="14.28%">Mon</th>'+
+							'<th width="14.28%">Tue</th>'+
+							'<th width="14.28%">Wed</th>'+
+							'<th width="14.28%">Thu</th>'+
+							'<th width="14.28%">Fri</th>'+
+							'<th width="14.32%">Sat</th>'+
+						'</tr>'+
+					'</thead>'+
+					'<tbody id="body'+n+'">'+
+					'</tbody>'+
+				'</table>';
+		return html;
+	}
+</script>
+<style type="text/css">
+	th,td{
+		border: 1px solid black;
+	}
+	td{
+		color: #0000FF;
+		text-align: center;
+	}
+	.gray{
+		background-color: gray;
+	}
+	.green{
+		background-color: green;
+	}
+	.yellow{
+		background-color: yellow;
+	}
+	.pink{
+		background-color: #FFB6C1;
+	}
+</style>
+</head>
+<body>
+	<label for="start">Start date:</label>
+	<input type="date" id="start" value="2018-02-21"/><br>
+	<label for="days">Number of days:</label>
+	<input type="number" id="days" value="10"  min="0"/><br>
+	<label for="code">Country code:</label>
+	<input type="text" id="code" maxlength="2" value="US"/><br>
+	<button type="button" onclick="doCalendar()">Calculate</button>
+	<div id="divCalendar" class="divCalendar">
+	</div>
+</body>
+</html>
